@@ -1,0 +1,34 @@
+﻿Server-Monitoring mit SNMP
+
+Auszulesende Daten:
+-Festplattenaustlastung (Speicherplatz)
+-Prozessorauslastung
+-Netzwerkauslastung
+-RAM-Auslastung
+jeweils mit Warnung in Weboberfläche
+
+Allgemeine Anforderungen:
+-Datenbanken und Webschnittstelle
+-Klassenbibliotheken
+-Software-Pattern auswählen/verwenden
+-Webservices nutzen und eigene erstellen
+
+Virtuellen Server verwenden
+
+Arbeitspakete
+-Weboberfläche
+-Server aufsetzen
+-Datenbeschaffung
+-Datenbank erstellen
+
+Test-Programm: MIP-Browser IReasoning
+
+Abgaben:
+-Pflichtenheft (DB, Benutzeroberfläche, Schnittstelle)
+-Projektplan
+-Testplan
+-Testprotokoll
+-Produktdokumentation
+-Sourcecode
+-Ausführbare Software
+-Präsentation einzelner Themen aus dem Projekt (Einsatz Pattern - Webservices - usw.)
