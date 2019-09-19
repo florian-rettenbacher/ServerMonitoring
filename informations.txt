@@ -32,3 +32,5 @@ Abgaben:
 -Sourcecode
 -Ausführbare Software
 -Präsentation einzelner Themen aus dem Projekt (Einsatz Pattern - Webservices - usw.)
+
+Abgaben 
