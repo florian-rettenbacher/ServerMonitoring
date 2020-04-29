@@ -5,8 +5,8 @@ Imports System.Globalization
 Public Class Server
 	Dim server_id As Integer
 	Dim host_ip As String
-	Dim username As String = "administrator"
-	Dim password As String = "Password1!"
+	Dim username As String
+	Dim password As String
 
 	Dim main_drive_usage As Double = 0
 	Dim second_drive_usage As Double = 0
@@ -37,7 +37,7 @@ Public Class Server
 			myManagementScope = New ManagementScope("\\" & host_ip & "\root\cimv2", connectOptions)
 			myManagementScope.Connect()
 		Catch ex As Exception
-			Console.WriteLine("Connection failed: " & ex.Message)
+			Console.WriteLine(DateTime.Now.ToString("yyyy-mm-dd HH:mm:ss") & vbTab & "The connection to the server failed: " & ex.Message)
 			Return False
 		End Try
 
@@ -73,10 +73,6 @@ Public Class Server
 				ElseIf Not queryObj_drive("Capacity") = 0 Then
 					second_drive_usage = (queryObj_drive("FreeSpace") / queryObj_drive("Capacity")) * 100
 				End If
-
-				Console.WriteLine(queryObj_drive("Caption") + vbTab +
-								  (queryObj_drive("Capacity") / 1024 / 1024 / 1024).ToString() + vbTab +
-								  (queryObj_drive("FreeSpace") / 1024 / 1024 / 1024).ToString())
 			Next
 
 			'CPU-Usage
@@ -84,9 +80,6 @@ Public Class Server
 			Dim searcher_cpu As New Management.ManagementObjectSearcher(myManagementScope, query_cpu)
 			For Each queryObj_cpu As Management.ManagementObject In searcher_cpu.Get()
 				cpu_usage = queryObj_cpu("PercentProcessorTime")
-
-				Console.WriteLine("CPU-Usage [%]" + vbTab +
-								  queryObj_cpu("PercentProcessorTime").ToString() + vbTab)
 			Next
 
 			'RAM-Current-Usage
@@ -95,9 +88,6 @@ Public Class Server
 			Dim searcher_ram As New Management.ManagementObjectSearcher(myManagementScope, query_ram)
 			For Each queryObj_ram As Management.ManagementObject In searcher_ram.Get()
 				ram_current_available = queryObj_ram("AvailableMBytes")
-
-				Console.WriteLine("Available RAM [MB]" + vbTab +
-								  queryObj_ram("AvailableMBytes").ToString())
 			Next
 
 			'RAM-Total
@@ -105,9 +95,6 @@ Public Class Server
 			Dim searcher_tram As New Management.ManagementObjectSearcher(myManagementScope, query_tram)
 			For Each queryObj_tram As Management.ManagementObject In searcher_tram.Get()
 				ram_usage = ((queryObj_tram("TotalPhysicalMemory") / 1024 / 1024) - ram_current_available) / (queryObj_tram("TotalPhysicalMemory") / 1024 / 1024) * 100
-
-				Console.WriteLine("RAM-Total [MB]" + vbTab +
-								  (queryObj_tram("TotalPhysicalMemory") / 1024 / 1024).ToString())
 			Next
 
 			'Get Network-Usage
@@ -117,21 +104,16 @@ Public Class Server
 				If Not queryObj_networkusage("BytesTotalPersec") = 0 Then
 					network_usage = queryObj_networkusage("BytesTotalPersec") / (queryObj_networkusage("CurrentBandwidth") / 8) * 100
 				End If
-
-				Console.WriteLine("Network-Usage:" + vbTab +
-								  queryObj_networkusage("CurrentBandwidth").ToString + vbTab +
-								  queryObj_networkusage("BytesTotalPersec").ToString + vbTab +
-								  (queryObj_networkusage("BytesTotalPersec") / (queryObj_networkusage("CurrentBandwidth") / 8) * 100).ToString)
 			Next
 		Catch err As Management.ManagementException
-			Console.WriteLine("WMI query failed with the following error: " & err.Message)
+			Console.WriteLine(DateTime.Now.ToString("yyyy-mm-dd HH:mm:ss") & vbTab & "WMI query failed with the following error: " & err.Message)
 			Return False
 		Catch unauthorizedErr As System.UnauthorizedAccessException
-			Console.WriteLine("Authentication error: " & unauthorizedErr.Message)
+			Console.WriteLine(DateTime.Now.ToString("yyyy-mm-dd HH:mm:ss") & vbTab & "Authentication error: " & unauthorizedErr.Message)
 			Return False
 		Catch ex As Exception
-			Console.WriteLine("A general problem occured. Check your and the servers connection to the local network")
-			Console.WriteLine(ex.ToString() + vbNewLine + vbNewLine)
+			Console.WriteLine(DateTime.Now.ToString("yyyy-mm-dd HH:mm:ss") & vbTab & "A general problem occured. Check your and the servers connection to the local network")
+			Console.WriteLine(vbTab & vbTab & vbTab & ex.ToString() + vbNewLine)
 			Return False
 		End Try
 
@@ -139,11 +121,11 @@ Public Class Server
 	End Function
 
 	Public Sub PrintOutCurrentUsage()
-		Console.WriteLine("C-Festplatte" + vbTab + main_drive_usage.ToString + "%" + vbNewLine +
-						  "D-Festplatte" + vbTab + second_drive_usage.ToString + "%" + vbNewLine +
-						  "RAM-Auslastung" + vbTab + ram_usage.ToString + "%" + vbNewLine +
-						  "CPU-Auslastung" + vbTab + cpu_usage.ToString + "%" + vbNewLine +
-						  "Netzwerk" + vbTab + network_usage.ToString + "%")
+		Console.WriteLine(DateTime.Now.ToString("yyyy-mm-dd HH:mm:ss") & vbTab & "C-Festplatte" + vbTab + main_drive_usage.ToString & "%" & vbNewLine &
+						  vbTab & vbTab & vbTab & "D-Festplatte" & vbTab & second_drive_usage.ToString & "%" & vbNewLine &
+						  vbTab & vbTab & vbTab & "RAM-Auslastung" & vbTab & ram_usage.ToString & "%" & vbNewLine &
+						  vbTab & vbTab & vbTab & "CPU-Auslastung" & vbTab & cpu_usage.ToString & "%" & vbNewLine &
+						  vbTab & vbTab & vbTab & "Netzwerk" & vbTab & network_usage.ToString & "%")
 	End Sub
 
 	Public Function InsertIntoDB(ByVal mySqlConnection As MySqlConnection) As Boolean
@@ -166,7 +148,7 @@ Public Class Server
 			myCmd.CommandText = "INSERT INTO log (value, server_id, monitoring_type_id) VALUES (" & cpu_usage.ToString("F04", New CultureInfo("en-us")) & ", " & server_id & ", (SELECT monitoring_type_id FROM monitoring_type WHERE name = 'cpu_usage'))"
 			myCmd.ExecuteNonQuery()
 		Catch ex As Exception
-			Console.WriteLine("A error occured while inserting the current server data into the database." & vbNewLine & ex.Message)
+			Console.WriteLine(DateTime.Now.ToString("yyyy-mm-dd HH:mm:ss") & vbTab & "A error occured while inserting the current server data into the database." & vbNewLine & vbTab & vbTab & vbTab & "D-Festplatte" & vbTab & ex.Message)
 			Return False
 		End Try
 		Return True

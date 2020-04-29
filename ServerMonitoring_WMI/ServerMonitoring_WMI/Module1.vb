@@ -3,7 +3,7 @@ Imports MySql.Data.MySqlClient
 Imports System.Globalization
 
 Module Module1
-	' @TODO: Exception-Handling, Schöne Log-Ausgabe
+	' @TODO: Exception-Handling, Schöne Log-Ausgabe  
 
 	Dim servers As List(Of Server) = New List(Of Server)
 
@@ -12,12 +12,12 @@ Module Module1
 	Sub Main()
 		If ConnectToDB() Then
 			getServers()
-		End If
 
-		While True
-			updateAllServer()
-			Threading.Thread.Sleep(2000)
-		End While
+			While True
+				updateAllServer()
+				Threading.Thread.Sleep(2000)
+			End While
+		End If
 	End Sub
 
 	Private Function ConnectToDB() As Boolean
@@ -32,25 +32,29 @@ Module Module1
 			mySqlConnection.ConnectionString = csb.ConnectionString
 			mySqlConnection.Open()
 		Catch ex As Exception
-			Console.WriteLine("Es konnte keine Verbinung zur Datenbank hergestellt werden.")
+			Console.WriteLine(DateTime.Now.ToString("yyyy-mm-dd HH:mm:ss") & vbTab & "Connection to the database failed: " & ex.Message)
 			Return False
 		End Try
 		Return True
 	End Function
 
 	Private Sub getServers()
-		Dim myCmd As MySqlCommand = New MySqlCommand()
-		Dim myReader As MySqlDataReader
-		myCmd.Connection = mySqlConnection
+		Try
+			Dim myCmd As MySqlCommand = New MySqlCommand()
+			Dim myReader As MySqlDataReader
+			myCmd.Connection = mySqlConnection
 
-		myCmd.CommandText = "SELECT * FROM server"
-		myReader = myCmd.ExecuteReader()
+			myCmd.CommandText = "SELECT * FROM server"
+			myReader = myCmd.ExecuteReader()
 
-		While myReader.Read()
-			servers.Add(New Server(myReader.GetInt16("server_id"), myReader.GetString("ip_adresse"), myReader.GetString("username"), myReader.GetString("password")))
-		End While
+			While myReader.Read()
+				servers.Add(New Server(myReader.GetInt16("server_id"), myReader.GetString("ip_adresse"), myReader.GetString("username"), myReader.GetString("password")))
+			End While
 
-		myReader.Close()
+			myReader.Close()
+		Catch ex As Exception
+			Console.WriteLine(DateTime.Now.ToString("yyyy-mm-dd HH:mm:ss") & vbTab & "Error while selecting the server parameters from the database." & vbNewLine & ex.Message)
+		End Try
 	End Sub
 
 	Private Sub updateAllServer()
