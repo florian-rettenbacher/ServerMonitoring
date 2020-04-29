@@ -54,10 +54,6 @@
                 color: #FB431C;
             }
 
-            .font {
-                font-size: 18px;
-            }
-
             .m-b-md {
                 margin-bottom: 30px;
             }

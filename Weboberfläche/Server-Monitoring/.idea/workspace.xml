@@ -125,7 +125,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="editor.config.ad.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Kron/Kronreif-Bau" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Verwaltungssystem/Kronreif-Bau" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="watcher.settings" />
   </component>
@@ -192,6 +192,10 @@
       <workItem from="1587023046996" duration="396000" />
       <workItem from="1587028674532" duration="7245000" />
       <workItem from="1587063123361" duration="88000" />
+      <workItem from="1587638707259" duration="213000" />
+      <workItem from="1587666506218" duration="4963000" />
+      <workItem from="1588158614753" duration="1759000" />
+      <workItem from="1588160632722" duration="6000" />
     </task>
     <servers />
   </component>

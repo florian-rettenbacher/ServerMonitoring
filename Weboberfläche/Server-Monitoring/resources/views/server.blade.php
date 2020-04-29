@@ -24,7 +24,12 @@
     <!-- Styles -->
     <style>
         html, body {
-            background-color: #fff;
+
+            background-image: url({{ URL::asset('uploads/server.jpeg') }});
+            background-size: cover;
+            background-position: center;
+            background-repeat: repeat;
+
             color: #808080;
             font-family: 'Nunito', sans-serif;
             font-weight: 200;
@@ -32,79 +37,46 @@
             margin: 0;
         }
 
-        .full-height {
-            height: 100vh;
-        }
-
-        .flex-center {
-            align-items: center;
-            display: flex;
-            justify-content: center;
-        }
-
-        .position-ref {
-            position: relative;
-        }
-
-        .top-right {
-            position: absolute;
-            right: 10px;
-            top: 18px;
-        }
-
-        .content {
-            text-align: center;
-        }
-
-        .title {
-            font-size: 84px;
-            color: #FB431C;
-        }
-
-        .font {
-            font-size: 18px;
-        }
-
-        .m-b-md {
-            margin-bottom: 30px;
-        }
-
-
     </style>
 </head>
-<body>
-
 <nav class="navbar navbar-dark bg-dark">
     <a class="navbar-brand">Server-Monitoring</a>
-    <a type="button" class="btn btn-secondary" href="{{config('app.url', '')}}/">Zurück</a>
+    <a type="button" class="btn btn-outline-primary" href="{{config('app.url', '')}}/">Zurück</a>
 </nav>
-
-<ul class="list-group">
-    <li class="list-group-item active">Ausgewählter Server: {{$server->server_name}}</li>
-    <li class="list-group-item">IP-Adresse: {{$server->ip_adresse}}</li>
-    <li class="list-group-item">Standort: {{$server->location}}</li>
-    <li class="list-group-item">Beginn: {{$begin}}</li>
-    <li class="list-group-item">Ende: {{$end}}</li>
-</ul>
 <br>
 
-<ul class="list-group">
-    <li class="list-group-item active">Protokolldaten des Servers im ausgewähten Zeitraum:</li>
-</ul>
-@foreach($logs as $log)
-    @foreach($monitoring_types as $monitoring_type)
-<ul class="list-group">
-    <li class="list-group-item list-group-item-dark">Überwachungsparameter: {{$monitoring_type->name}}</li>
-    <li class="list-group-item">momentaner Wert: {{$log->value}}</li>
-    <li class="list-group-item">Warnung bei: {{$monitoring_type->warning_value}}</li>
-    <li class="list-group-item">Erstellt am: {{$log->created_at}}</li>
-    <li class="list-group-item">Server: {{$server->server_name}}</li>
-    <li class="list-group-item">Server ID: {{$log->server_id}}</li>
-    <br>
-</ul>
-    @endforeach
-@endforeach
+<div class="container">
+    <div class="col">
+        <ul class="list-group">
+            <div class="p-3 mb-2 bg-dark text-white">Allgemeine Serverinformationen:</div>
+            <li class="list-group-item">Ausgewählter Server: {{$server->server_name}}</li>
+            <li class="list-group-item">IP-Adresse: {{$server->ip_adresse}}</li>
+            <li class="list-group-item">Standort: {{$server->location}}</li>
+            <li class="list-group-item">Serverdaten von: {{$begin}}</li>
+            <li class="list-group-item">Serverdaten bis: {{$end}}</li>
+        </ul>
+    </div>
+</div>
 
+<br>
+<div class="container">
+    <div class="col">
+        <div class="p-3 mb-2 bg-dark text-white">Alle vorhandenen Protokolldaten des Servers im ausgewähten Zeitraum:</div>
+            @foreach($logs as $log)
+                @foreach($monitoring_types as $monitoring_type)
+                <ul class="list-group">
+                    <div class="p-3 mb-2 bg-info text-white">Überwachungsparameter: {{$log->name}}</div>
+                    <li class="list-group-item">gemessener Wert: {{$log->value}}</li>
+                    <li class="list-group-item">Warnung bei: {{$monitoring_type->warning_value}}</li>
+                    <li class="list-group-item">Erstellt am: {{$log->created_at}}</li>
+                    <li class="list-group-item">Server: {{$server->server_name}}</li>
+                    <li class="list-group-item">Server ID: {{$log->server_id}}</li>
+                    <br>
+                </ul>
+            @endforeach
+        @endforeach
+    </div>
+</div>
 </body>
 </html>
 
